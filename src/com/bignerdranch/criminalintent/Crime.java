@@ -16,6 +16,13 @@ public class Crime {
 		mDate = new Date();
 	}
 	
+	// Override this value so that when our ArrayAdapter grabs these guys to display, it can
+	//   print out some meaningful text instead of the class name and memory address (default)
+	@Override
+	public String toString() {
+		return mTitle;
+	}
+	
 	public Date getDate() {
 		return mDate;
 	}
