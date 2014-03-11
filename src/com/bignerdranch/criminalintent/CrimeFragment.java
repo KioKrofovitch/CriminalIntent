@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
@@ -19,6 +20,7 @@ import android.widget.EditText;
 public class CrimeFragment extends Fragment {
 	
 	public static final String EXTRA_CRIME_ID = "com.bignerdranch.criminalintent.crime_id";
+	public static final String DIALOG_DATE = "date";
 	
 	private Crime mCrime;
 	private EditText mTitleField;
@@ -73,7 +75,15 @@ public class CrimeFragment extends Fragment {
 		mDateButton = (Button)v.findViewById(R.id.crime_date);
 		String formatDate = DateFormat.format("EEEE, MMM dd, yyyy", mCrime.getDate()).toString();
 		mDateButton.setText(formatDate);
-		mDateButton.setEnabled(false); // Disabled only for now; also thats why we didnt set a listener here.
+		mDateButton.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				FragmentManager fm = getActivity().getSupportFragmentManager();
+				DatePickerFragment dialog = new DatePickerFragment();
+				dialog.show(fm, DIALOG_DATE);
+			}
+		});
 		
 		// "Solved" Check box
 		mSolvedCheckBox = (CheckBox)v.findViewById(R.id.crime_solved);
