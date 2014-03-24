@@ -3,11 +3,13 @@ package com.bignerdranch.criminalintent;
 import java.util.Date;
 import java.util.UUID;
 
+import android.text.format.Time;
+
 public class Crime {
 	
 	private UUID mId;
 	private String mTitle;
-	private Date mDate;  // KIO: used java.util and not java.sql, in case this causes errors later
+	private Date mDate;
 	private boolean mSolved;
 	
 	public Crime() {

@@ -1,5 +1,6 @@
 package com.bignerdranch.criminalintent;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
@@ -11,6 +12,7 @@ import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
+import android.text.format.Time;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,9 +28,13 @@ public class CrimeFragment extends Fragment {
 	private static final String DIALOG_DATE = "date";
 	private static final int REQUEST_DATE = 0;
 	
+	private static final String DIALOG_TIME = "time";
+	private static final int REQUEST_TIME = 1;
+	
 	private Crime mCrime;
 	private EditText mTitleField;
 	private Button mDateButton;
+	private Button mTimeButton;
 	private CheckBox mSolvedCheckBox;
 	
 	public static CrimeFragment newInstance(UUID crimeId){
@@ -44,6 +50,22 @@ public class CrimeFragment extends Fragment {
 	private void updateDate() {
 		String formatDate = DateFormat.format("EEEE, MMM dd, yyyy", mCrime.getDate()).toString();
 		mDateButton.setText(formatDate);
+	}
+	
+	private void updateTime() {
+		// TODO KIO Is this really necessary to creat a calendar?
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(mCrime.getDate());
+		
+		Time time = new Time();
+		time.hour = calendar.get(Calendar.HOUR);
+		time.minute = calendar.get(Calendar.MINUTE);
+		
+
+		
+		String timeFormat = time.format("%I:%M");
+		
+		mTimeButton.setText(timeFormat);
 	}
 	
 	@Override
@@ -94,6 +116,20 @@ public class CrimeFragment extends Fragment {
 			}
 		});
 		
+		// Time Button
+		mTimeButton = (Button)v.findViewById(R.id.crime_time);
+		updateTime();
+		mTimeButton.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				FragmentManager fm = getActivity().getSupportFragmentManager();
+				TimePickerFragment dialog = TimePickerFragment.newInstance(mCrime.getDate());
+				dialog.setTargetFragment(CrimeFragment.this, REQUEST_TIME);
+				dialog.show(fm, DIALOG_TIME);
+			}
+		});
+		
 		// "Solved" Check box
 		mSolvedCheckBox = (CheckBox)v.findViewById(R.id.crime_solved);
 		mSolvedCheckBox.setChecked(mCrime.isSolved());
@@ -115,6 +151,12 @@ public class CrimeFragment extends Fragment {
 		
 		if(requestCode == REQUEST_DATE){
 			Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
+			mCrime.setDate(date);
+			updateDate();
+		}
+		
+		if(requestCode == REQUEST_TIME){
+			Date date = (Date) data.getSerializableExtra(TimePickerFragment.EXTRA_TIME);
 			mCrime.setDate(date);
 			updateDate();
 		}
