@@ -17,11 +17,9 @@ import android.widget.TimePicker.OnTimeChangedListener;
 
 public class TimePickerFragment extends DialogFragment {
 	public static final String EXTRA_TIME = "com.bignerdranche.android.criminalintent.time";
+	public static final String TAG_KIO = "KIO";
 	
 	private Date mDate;
-	// Making these members might be a cop out???
-	private int mHour;
-	private int mMinute;
 	
 	public static TimePickerFragment newInstance(Date date){
 		Bundle args = new Bundle();
@@ -33,9 +31,12 @@ public class TimePickerFragment extends DialogFragment {
 	}
 
 	private void sendResult(int resultCode){
+		Log.d(TAG_KIO, "Inside sendResult");
 		if ( getTargetFragment() == null) {
 			return;
 		}
+		
+		Log.d(TAG_KIO, "mDate is: " + mDate.getTime());
 		
 		Intent i = new Intent();
 		i.putExtra(EXTRA_TIME, mDate);
@@ -45,34 +46,40 @@ public class TimePickerFragment extends DialogFragment {
 
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState){
+		// Get date from the Extra
 		mDate = (Date) getArguments().getSerializable(EXTRA_TIME);
 		
-		// I had to create a Calendar object  for Date. I should create a Time object for this one
+		// Create a calendar so you can access hour and minutes
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(mDate);
-		mHour = calendar.get(Calendar.HOUR);
-		mMinute = calendar.get(Calendar.MINUTE);
-		
+
 		// Inflate the Time Dialog View
 		View v = getActivity().getLayoutInflater().inflate(R.layout.dialog_time, null);
 		
-		// Get the time picker
+		// Get the time picker and set hour and minute
 		TimePicker timePicker = (TimePicker) v.findViewById(R.id.dialog_time_picker);
-		timePicker.setCurrentHour(mHour);
-		timePicker.setCurrentMinute(mMinute);
+		timePicker.setCurrentHour( calendar.get(Calendar.HOUR) );
+		timePicker.setCurrentMinute( calendar.get(Calendar.MINUTE) );
 		
 		timePicker.setOnTimeChangedListener( new OnTimeChangedListener() {
 			
 			@Override
 			public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
-				Log.d("KIO", "mDate: "+mDate.getTime());
-				Log.d("KIO", "hourOfDay: " + hourOfDay);
-				Log.d("KIO", "minute: " + minute);
+				Log.d(TAG_KIO, "mDate: " + mDate.toString());
+				Log.d(TAG_KIO, "mDate time: "+mDate.getTime());
+				Log.d(TAG_KIO, "hourOfDay: " + hourOfDay);
+				Log.d(TAG_KIO, "minute: " + minute);
 				
-				// This is a hack TODO				
-				long timeInMilliseconds = (60000*minute) + (3600000*hourOfDay);
-				mDate.setTime(timeInMilliseconds);	
-				Log.d("KIO", "mDate: "+mDate.getTime());
+				// KIO - This is how you use calendar!
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(mDate);
+				calendar.set(Calendar.HOUR, hourOfDay);
+				calendar.set(Calendar.MINUTE, minute);
+				mDate.setTime( calendar.getTimeInMillis() );
+				
+				Log.d(TAG_KIO, "mDate after: "+mDate.toString());
+				Log.d(TAG_KIO, "mDate time after: "+mDate.getTime());
+				
 				getArguments().putSerializable(EXTRA_TIME, mDate);
 			}
 		});
@@ -86,7 +93,7 @@ public class TimePickerFragment extends DialogFragment {
 						
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
-							Log.d("KIO", "Time Picker OK has been clicked");
+							Log.d(TAG_KIO, "Time Picker OK has been clicked");
 							sendResult(Activity.RESULT_OK);	
 						}
 					})

@@ -13,6 +13,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.text.format.Time;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,8 @@ public class CrimeFragment extends Fragment {
 	
 	private static final String DIALOG_TIME = "time";
 	private static final int REQUEST_TIME = 1;
+	
+	public static final String TAG_KIO = "KIO";
 	
 	private Crime mCrime;
 	private EditText mTitleField;
@@ -54,17 +57,18 @@ public class CrimeFragment extends Fragment {
 	
 	private void updateTime() {
 		// TODO KIO Is this really necessary to creat a calendar?
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(mCrime.getDate());
+		//Calendar calendar = Calendar.getInstance();
+		//calendar.setTime(mCrime.getDate());
+		
+		Log.d(TAG_KIO, "Inside updateTime() mDate time is: " + mCrime.getDate().getTime() );
+		Log.d(TAG_KIO, "Inside updateTime() mDate is: " + mCrime.getDate() );
 		
 		Time time = new Time();
-		time.hour = calendar.get(Calendar.HOUR);
-		time.minute = calendar.get(Calendar.MINUTE);
-		
-
+		time.set(mCrime.getDate().getTime());
 		
 		String timeFormat = time.format("%I:%M");
-		
+		Log.d(TAG_KIO, "timeFormat is: " + timeFormat);
+
 		mTimeButton.setText(timeFormat);
 	}
 	
@@ -158,7 +162,7 @@ public class CrimeFragment extends Fragment {
 		if(requestCode == REQUEST_TIME){
 			Date date = (Date) data.getSerializableExtra(TimePickerFragment.EXTRA_TIME);
 			mCrime.setDate(date);
-			updateDate();
+			updateTime();
 		}
 	}
 
