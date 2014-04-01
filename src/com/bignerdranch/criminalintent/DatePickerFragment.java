@@ -20,6 +20,8 @@ public class DatePickerFragment extends DialogFragment {
 	public static final String EXTRA_DATE = "com.bignerdranch.android.criminalintent.date";
 	
 	private Date mDate;
+	private int mHour;
+	private int mMinute;
 	
 	public static DatePickerFragment newInstance(Date date){
 		Bundle args = new Bundle();
@@ -51,6 +53,8 @@ public class DatePickerFragment extends DialogFragment {
 		int year = calendar.get(Calendar.YEAR);
 		int month = calendar.get(Calendar.MONTH);
 		int day = calendar.get(Calendar.DAY_OF_MONTH);
+		mHour = calendar.get(Calendar.HOUR);
+		mMinute = calendar.get(Calendar.MINUTE);
 		
 		View v = getActivity().getLayoutInflater().inflate(R.layout.dialog_date, null);
 		
@@ -60,8 +64,8 @@ public class DatePickerFragment extends DialogFragment {
 			@Override
 			public void onDateChanged(DatePicker view, int year, int monthOfYear,
 					int dayOfMonth) {
-				// Translate year, month, day into a Date object using a calendar
-				mDate = new GregorianCalendar(year, monthOfYear, dayOfMonth).getTime();
+				// Translate year, month, day into a Date object using a calendar, maintaining the time
+				mDate = new GregorianCalendar(year, monthOfYear, dayOfMonth, mHour, mMinute).getTime();
 				
 				// Update argument to preserve selected value on rotation
 				getArguments().putSerializable(EXTRA_DATE, mDate);
