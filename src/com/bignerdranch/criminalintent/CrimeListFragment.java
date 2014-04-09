@@ -14,8 +14,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -26,6 +28,8 @@ public class CrimeListFragment extends ListFragment {
 
 	private ArrayList<Crime> mCrimes;
 	private boolean mSubtitleVisible;
+	
+	private Button mNewCrimeButton;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -37,7 +41,7 @@ public class CrimeListFragment extends ListFragment {
 
 		// Get singleton and then get list of crimes
 		mCrimes = CrimeLab.get(getActivity()).getCrimes();
-
+		
 		// Create the Adapter
 		CrimeAdapter adapter = new CrimeAdapter(mCrimes);
 		setListAdapter(adapter);
@@ -50,7 +54,28 @@ public class CrimeListFragment extends ListFragment {
 	@TargetApi(11)
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState){
-		View v = super.onCreateView(inflater, parent, savedInstanceState);
+		// Get view for fragment
+		View v = inflater.inflate(R.layout.fragment_crime_list, parent, false);
+		
+		// Set custom empty view
+		View empty = v.findViewById(R.id.custom_empty_view);
+		ListView displayList = (ListView) v.findViewById(android.R.id.list);
+		displayList.setEmptyView(empty);
+		
+		// Link Button for Empty Display
+		mNewCrimeButton = (Button) v.findViewById(R.id.new_crime_button);
+		mNewCrimeButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Crime crime = new Crime();
+				CrimeLab.get(getActivity()).addCrime(crime);
+				
+				Intent i = new Intent(getActivity(), CrimePagerActivity.class);
+				i.putExtra(CrimeFragment.EXTRA_CRIME_ID, crime.getId());
+				startActivityForResult(i, 0);
+			}
+		});
+		
 		
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB){
 			getActivity().getActionBar().setSubtitle(R.string.subtitle);

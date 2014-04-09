@@ -18,4 +18,7 @@
     <string name="subtitle">If you see something, say something.</string>
     <string name="delete_crime">Delete</string>
     
+    <string name="no_crimes">There are currently no crimes to display.</string>
+    <string name="add_new_crime">Add New Crime</string>
+    
 </resources>
