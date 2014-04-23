@@ -49,6 +49,12 @@ public class CrimeLab {
 		mCrimes.add(c);
 	}
 	
+	// Delete a single Crime to the list
+	public void deleteCrime(Crime c){
+		Log.d(TAG, "Deleting this crime: " + c.getTitle() );
+		mCrimes.remove(c);
+	}
+	
 	// Return entire list of crimes
 	public ArrayList<Crime> getCrimes() {
 		return mCrimes;
