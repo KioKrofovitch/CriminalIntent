@@ -21,4 +21,7 @@
     <string name="no_crimes">There are currently no crimes to display.</string>
     <string name="add_new_crime">Add New Crime</string>
     
+    <string name="take">Take!</string>
+    <string name="add_image">Add image</string>
+    
 </resources>
