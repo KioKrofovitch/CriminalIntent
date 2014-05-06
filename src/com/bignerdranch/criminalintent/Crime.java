@@ -6,6 +6,8 @@ import java.util.UUID;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Log;
+
 public class Crime {
 	
 	private static final String JSON_ID = "id";
@@ -13,12 +15,14 @@ public class Crime {
 	private static final String JSON_SOLVED = "solved";
 	private static final String JSON_DATE = "date";
 	private static final String JSON_PHOTO = "photo";
+	private static final String JSON_SUSPECT="suspect";
 	
 	private UUID mId;
 	private String mTitle;
 	private Date mDate;
 	private boolean mSolved;
 	private Photo mPhoto;
+	private String mSuspect;
 	
 	public Crime() {
 		// Generate a unique identifier
@@ -31,10 +35,17 @@ public class Crime {
 		if (json.has(JSON_TITLE)) {
 			mTitle = json.getString(JSON_TITLE);
 		}
+		
 		mSolved = json.getBoolean(JSON_SOLVED);
+		
 		mDate = new Date(json.getLong(JSON_DATE));
+		
 		if( json.has(JSON_PHOTO) ) {
 			mPhoto = new Photo(json.getJSONObject(JSON_PHOTO));
+		}
+		
+		if( json.has(JSON_SUSPECT) ) {
+			mSuspect = json.getString(JSON_SUSPECT);
 		}
 	}
 	
@@ -49,6 +60,7 @@ public class Crime {
 		if (mPhoto != null) {
 			json.put(JSON_PHOTO, mPhoto.toJSON());
 		}
+		json.put(JSON_SUSPECT, mSolved);
 		
 		return json;
 	}
@@ -94,5 +106,14 @@ public class Crime {
 	
 	public void setPhoto(Photo p){
 		mPhoto = p;
+	}
+	
+	public String getSuspect() {
+		Log.d("KIO", "mSuspect: "+mSuspect);
+		return mSuspect;
+	}
+	
+	public void setSuspect(String suspect) {
+		mSuspect = suspect;
 	}
 }
